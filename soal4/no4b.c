@@ -71,16 +71,7 @@ int main(){
         printf("\n");
     }
 
-    // for (int i = 0; i < 4; i++)
-    // {
-    //     for (int j = 0; j < 5; j++)
-    //     {
-    //         printf("%d ",matriksA[i][j]);
-    //      //   matriksA[i][j]=matriksShare[i][j];
-    //     }
-    //     printf("\n");
-    // }
-
+    
     shmdt(matriksShare);
     //shmctl(shmid,IPC_RMID,NULL);
 
