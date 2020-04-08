@@ -22,7 +22,7 @@ void* faktorial(void *arg){
             long long faktorialMatriks= 1;
             for (int k = 1; k <= simpanAngka; k++)
             {
-                faktorialMatriks *= k ;
+                faktorialMatriks += k ;
             }
             matriksB[i][j]=faktorialMatriks;
         }
