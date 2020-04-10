@@ -19,7 +19,7 @@ void* faktorial(void *arg){
         for (int j = 0; j < 5; j++)
         {
             int simpanAngka = matriksA[i][j];
-            long long faktorialMatriks= 1;
+            long long faktorialMatriks= 0;
             for (int k = 1; k <= simpanAngka; k++)
             {
                 faktorialMatriks += k ;
