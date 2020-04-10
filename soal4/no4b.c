@@ -8,13 +8,16 @@
 #include<sys/ipc.h>
 #include<sys/shm.h>
 
-#define MAX_THREAD 1
+#define MAX_THREAD 4
 
 int matriksA[4][5];
 long long matriksB[4][5];
 
+int iter =0;
+
 void* faktorial(void *arg){
-    for (int i = 0; i < 4; i++)
+
+    for (int i = iter; i < (iter +1 ); i++)
     {
         for (int j = 0; j < 5; j++)
         {
@@ -28,6 +31,7 @@ void* faktorial(void *arg){
         }
         
     }
+    iter++;
     
 
 }
@@ -70,8 +74,6 @@ int main(){
         }
         printf("\n");
     }
-
-    
     shmdt(matriksShare);
     //shmctl(shmid,IPC_RMID,NULL);
 
