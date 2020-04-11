@@ -128,4 +128,156 @@ Begitu batu terakhir berhasil didapatkan. Gemuruh yang semakin lama semakin besa
 Sementara batu tadi kembali ke posisinya. Tanah kembali menutup, seolah tidak pernah ada lubang merekah di atasnya satu detik lalu. 
 Norland segera memasukkan tiga buah batu mulia Emerald, Amethys, Onyx pada Peti Kayu. Maka terbukalah Peti Kayu tersebut. Di dalamnya terdapat sebuah harta karun rahasia. Sampai saat ini banyak orang memburu harta karun tersebut. Sebelum menghilang, dia menyisakan semua petunjuk tentang harta karun tersebut melalui tulisan dalam buku catatannya yang tersebar di penjuru dunia. "One Piece does exist". 
 
+# Penyelesaian
 
+## 4a
+
+```c
+int iter =0;
+
+void* perkalianMatriks(void *arg)
+{
+    
+    for (int i = iter ; i < (iter + 1) ; i++){
+        for(int j = 0; j < 5; j++){
+            for(int k =0; k < 2; k++){
+                matrikC[i][j] += matrikA[i][k] * matrikB[k][j];
+         
+            }
+        }   
+    }
+    iter++;
+}
+```
+Baris code di atas adalah fungsi perkalian matriks dan variable global iter.
+Guna iter di dalam proses looping di dalam fungsi perkalianmatriks tersebut adalah agar setiap jalan nya thread tidak ngelooping dari 0 melainkan melooping dari besar nya iter agar dalam mengisi setiap baris pada matriks berdasarkan hasil yang sesuai.
+
+```c
+key_t key = 1234;
+int (*matriksShare)[10];
+
+int shmid = shmget(key,sizeof *matriksShare * 20, IPC_CREAT | 0666);
+matriksShare = shmat(shmid, NULL, 0);
+
+shmdt(matriksShare);
+```
+Baris code di atas adalah untuk membuat share memory untuk ngeshare memory ke soal b nantinya.
+
+```c
+pthread_t thread[MAX_THREAD];
+for (int i = 0; i < MAX_THREAD; i++) { 
+    	int* p; 
+    	pthread_create(&thread[i], NULL, perkalianMatriks, (void*)(p)); 
+} 
+  
+for (int i = 0; i < MAX_THREAD; i++)  
+	pthread_join(thread[i], NULL);     
+
+```
+Baris code di atas adalah untuk melakukan atau menjalankan thread dimana thread berjalan sebanyak 4 kali yaitu sebanyak baris hasil perkalian matriksnya atau sebanyak MAX THREAD nya
+
+
+## 4b
+
+```c
+int iter =0;
+
+void* faktorial(void *arg){
+
+    for (int i = iter; i < (iter +1 ); i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            int simpanAngka = matriksA[i][j];
+            long long faktorialMatriks= 0;
+            for (int k = 1; k <= simpanAngka; k++)
+            {
+                faktorialMatriks += k ;
+            }
+            matriksB[i][j]=faktorialMatriks;
+        }
+        
+    }
+    iter++;
+}
+
+```
+Baris code di atas adalah baris code untuk melakukan penjumlahan dari 1 sampai besarnya angka di setiap matriks
+Guna iter di dalam proses looping di dalam fungsi faktorial tersebut adalah agar setiap jalan nya thread tidak ngelooping dari 0 melainkan melooping dari besar nya iter agar dalam mengisi setiap baris pada matriks berdasarkan hasil yang sesuai.
+
+
+```c
+key_t key = 1234;
+int (*matriksShare)[10];
+
+int shmid = shmget(key,sizeof *matriksShare * 20, IPC_CREAT | 0666);
+matriksShare = shmat(shmid, NULL, 0);
+shmdt(matriksShare);
+```
+Baris code di atas adalah code untuk mengambil id waktu share memory dan mengambil data yang di share oleh soal a dengan menggunakan share memory
+
+```c
+pthread_t thread[MAX_THREAD];
+
+for (int i = 0; i < MAX_THREAD; i++) { 
+	long long* p; 
+	pthread_create(&thread[i], NULL, faktorial, (void*)(p)); 
+} 
+
+for (int i = 0; i < MAX_THREAD; i++)  
+	pthread_join(thread[i], NULL); 
+```
+Baris code di atas adalah baris code untuk melakukan thread ke fungsi faktorial
+
+
+## 4c
+
+```c
+#include<stdio.h> 
+#include<stdlib.h> 
+#include<unistd.h> 
+#include<sys/types.h> 
+#include<string.h> 
+#include<sys/wait.h>
+
+
+int main(){
+
+    int pipe1[2];
+
+    pid_t p;
+
+    if(pipe(pipe1)==-1){
+        exit(1);
+    }
+    p=fork();
+
+   // parent proses
+    if(p > 0){
+        
+        dup2(pipe1[0],0);
+
+        close(pipe1[0]);
+        close(pipe1[1]);
+
+        char *argv[]={"wc","-l",NULL};
+        execv("/usr/bin/wc", argv);
+    
+    }
+
+    //child proses
+    else{
+
+        dup2(pipe1[1],1);
+
+        close(pipe1[0]);
+        close(pipe1[1]);
+
+        char *argv[]={"ls","/home/herri/Documents/soalShift3/soal4/",NULL};
+        execv("/bin/ls", argv);
+
+
+    }
+}
+```
+Baris code di atas adalah pipe untuk melakukan perintah ls wc -l yang bisa di lakukan di terminal yang nantinya akan menampilkan banyaknya file yang ada di sebuah directory tempat jawaban no 4a dan 4b berada. 
